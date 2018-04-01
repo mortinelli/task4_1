@@ -5,7 +5,8 @@ cpu=$(lscpu | grep "Model name:" | cut -d ":" -f2 | sed 's/^ *//;s/ *$//')
 ram=$(cat /proc/meminfo | grep "MemTotal" | cut -d ":" -f2 | sed 's/^ *//;s/ *$//')
 motherboard=$(dmidecode -s baseboard-product-name)
 sysserialnum=$(dmidecode -s system-serial-number)
-osdistr=$(cat /etc/*-release | grep PRETTY_NAME | grep -o '".*"'| sed 's/"//g')
+osdistrname=$(cat /etc/*-release | grep NAME | grep -v "PRETTY_NAME" | grep -o '".*"'| sed 's/"//g')
+osversion=$(cat /etc/*-release | grep VERSION | grep -v "VERSION_ID"| grep -o '".*"'| sed 's/"//g'| sed 's/(//g'| sed 's/)//g')
 kernel=$(uname -mrs)
 installdate=$(ls -alct / | tail -1| awk '{print $6, $7, $8}')
 uptimeDays=$(uptime -p | cut -d' ' -f2-)
@@ -17,7 +18,7 @@ echo RAM: $ram
 echo Motherboard: ${motherboard:-"Unknow"}
 echo System Serial Number: ${sysserialnum:-"Unknow"}
 echo --- System ---
-echo OS Distribution: $osdistr
+echo OS Distribution: $osdistrname $osversion
 echo Kernel version: $kernel
 echo Installation date: $installdate
 echo "Hostname:" $(hostname) 
